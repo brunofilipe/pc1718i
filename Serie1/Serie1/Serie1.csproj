@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0A03F85A-A032-47F4-9960-656003D3AE99}</ProjectGuid>
+    <ProjectGuid>{F63D2D18-4B65-4FDE-B20A-40AAAAD75F76}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Serie1</RootNamespace>
@@ -45,6 +45,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegionObj.cs" />
+    <Compile Include="SyncUtils.cs" />
+    <Compile Include="ThrottledRegion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
