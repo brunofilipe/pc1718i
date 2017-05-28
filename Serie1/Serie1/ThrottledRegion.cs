@@ -59,7 +59,9 @@ namespace Serie1 {
                         regionThread.Remove(threadId);
                         return false;
                     }
-                    if()
+                    if (regionThread.isFull()) {
+                        return false;
+                    }
 
                 } while (true);
 
