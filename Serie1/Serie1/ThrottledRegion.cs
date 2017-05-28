@@ -9,32 +9,27 @@ namespace Serie1 {
         private readonly int waitTimeout;
         private readonly Dictionary<int, RegionObj> regionThreads;
 
-        public ThrottledRegion(int maxInside, int maxWaiting, int waitTimeout)
-        {
+        public ThrottledRegion(int maxInside, int maxWaiting, int waitTimeout) {
             this.maxInside = maxInside;
             this.maxWaiting = maxWaiting;
             this.waitTimeout = waitTimeout;
             regionThreads = new Dictionary<int, RegionObj>();
         }
 
-        public bool TryEnter(int key)
-        {
+        public bool TryEnter(int key) {
             lock (this) {
                 int threadId = Thread.CurrentThread.ManagedThreadId;
-                if (!regionThreads.ContainsKey(key))
-                {
+                if (!regionThreads.ContainsKey(key)) {
                     RegionObj obj = new RegionObj(maxInside, maxWaiting);
                     regionThreads.Add(key, obj);
                 }
                 RegionObj regionThread = regionThreads[key];
-                if (regionThread.permits > 0)
-                {
+                if (regionThread.permits > 0) {
                     regionThread.permits--;
                     return true;
                 }
                 //if thread doesn't have permits , we must checked if it reached timeout
-                if (waitTimeout == 0)
-                {
+                if (waitTimeout == 0) {
                     return false;
                 }
                 if (regionThread.AddToList(threadId) == -1) {
@@ -42,10 +37,8 @@ namespace Serie1 {
                 }
                 int time = waitTimeout;
                 int lastTime = (time != Timeout.Infinite) ? Environment.TickCount : 0;
-                do
-                {
-                    try
-                    {
+                do {
+                    try {
                         Monitor.Wait(this, time);
                     }
                     catch (ThreadInterruptedException) {
@@ -55,7 +48,7 @@ namespace Serie1 {
                         }
                         throw;
                     }
-                    if (SyncUtils.AdjustTimeout(ref lastTime, ref time) == 0){
+                    if (SyncUtils.AdjustTimeout(ref lastTime, ref time) == 0) {
                         regionThread.Remove(threadId);
                         return false;
                     }
@@ -68,23 +61,17 @@ namespace Serie1 {
             }
         }
 
-        public void Leave(int key)
-        {
-            lock (this)
-            {
-                RegionObj regionThread = regionThreads[key];
-                if (regionThread == null)
-                {
-                    throw new Exception("There is no region with this key");
-                }
-                if (regionThread.permits < maxInside)
-                { //if the region still has permits
-                    regionThread.permits++;
-                    Monitor.PulseAll(regionThread);
-                }
+        public void Leave(int key) {
+            lock (this) {
+                    RegionObj regionThread = regionThreads[key];
+                    if (regionThread.permits < maxInside) {
+                        //if the region still has permits
+                        regionThread.permits++;
+                        Monitor.PulseAll(this);
+                        return;
+                    }
                 throw new Exception("The region doesn´t support more accesses");
             }
         }
-
     }
 }

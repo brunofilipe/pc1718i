@@ -17,10 +17,11 @@ namespace Serie1 {
         }
 
         public int AddToList(int id) {
-            if (isFull()) {
-                return -1; //cant add to list
+            if (maxWaiting == 0) { //no more threads can wait
+                return -1;
             }
             listOfThreads.AddLast(id);
+            maxWaiting--;
             return 1;
         }
 

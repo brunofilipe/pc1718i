@@ -11,7 +11,7 @@ namespace Serie1Tests
 
         [TestInitialize]
         public void Init() {
-            throttledRegion = new ThrottledRegion(2,0,2000);
+            throttledRegion = new ThrottledRegion(2,2,2000);
         }
 
         [TestMethod]
@@ -28,5 +28,22 @@ namespace Serie1Tests
             bool condition = throttledRegion.TryEnter(1);
             Assert.IsFalse(condition);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(System.Collections.Generic.KeyNotFoundException))]
+        public void TestLeaveFailureByNonExistingRegion() {
+            throttledRegion.Leave(1);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void TestLeaveFailureByEmptyRegion()
+        {
+            throttledRegion.TryEnter(1);
+            throttledRegion.Leave(1);
+            throttledRegion.Leave(1);
+        }
+
+
     }
 }

@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exchanger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionObj.cs" />
     <Compile Include="SyncUtils.cs" />
+    <Compile Include="ThreadPair.cs" />
     <Compile Include="ThrottledRegion.cs" />
   </ItemGroup>
   <ItemGroup>
