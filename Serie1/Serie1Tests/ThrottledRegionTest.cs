@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serie1;
 
@@ -37,13 +38,48 @@ namespace Serie1Tests
 
         [TestMethod]
         [ExpectedException(typeof(Exception))]
-        public void TestLeaveFailureByEmptyRegion()
-        {
+        public void TestLeaveFailureByEmptyRegion() {
             throttledRegion.TryEnter(1);
             throttledRegion.Leave(1);
             throttledRegion.Leave(1);
         }
 
+        [TestMethod]
+        public void TestEnterFullRegionMultiThread() {
+            bool[] condition = {false};
+            Thread th1 = new Thread(th => {
+                throttledRegion.TryEnter(1);
+                throttledRegion.TryEnter(1);
+            });
+          
+            Thread th2 = new Thread(th => {
+                condition[0] = throttledRegion.TryEnter(1);
+
+            });
+            th1.Start();
+            th2.Start();
+            th1.Join();
+            th2.Join();
+            Assert.IsFalse(condition[0]);
+        }
+
+        [TestMethod]
+        public void TestEnterAvailableRegionMultiThread()
+        {
+            bool[] condition = { false };
+            Thread th1 = new Thread(th => {
+                throttledRegion.TryEnter(1);
+            });
+
+            Thread th2 = new Thread(th => {
+                condition[0] = throttledRegion.TryEnter(1);
+            });
+            th1.Start();
+            th2.Start();
+            th1.Join();
+            th2.Join();
+            Assert.IsFalse(condition[0]);
+        }
 
     }
 }

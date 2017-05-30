@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Serie1 {
     public class RegionObj {
+
         public int permits;
+
+        private int maxInQueue;
 
         private int maxWaiting;
 
         private readonly LinkedList<int> listOfThreads;
 
-        public RegionObj(int permits, int maxWaiting)
-        {
+        public RegionObj(int permits, int maxWaiting) {
             listOfThreads = new LinkedList<int>();
             this.permits = permits;
             this.maxWaiting = maxWaiting;
+            this.maxInQueue = permits;
         }
 
         public int AddToList(int id) {
@@ -31,9 +35,14 @@ namespace Serie1 {
         }
 
         public bool isFull() {
-            return listOfThreads.Count == maxWaiting;
+            return maxWaiting == 0;
         }
 
-
+        public int IsInFirstPosition(int threadId) {
+            if (threadId == listOfThreads.First()) {
+                return 1;
+            }
+            return -1;
+        }
     }
 }

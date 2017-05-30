@@ -52,8 +52,11 @@ namespace Serie1 {
                         regionThread.Remove(threadId);
                         return false;
                     }
-                    if (regionThread.isFull()) {
-                        return false;
+
+                    if (regionThread.permits > 0 && regionThread.IsInFirstPosition(threadId) == 1) {
+                        regionThread.permits++;
+                        regionThread.Remove(threadId);
+                        return true;
                     }
 
                 } while (true);
