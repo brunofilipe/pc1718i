@@ -12,10 +12,17 @@ namespace Serie1
         private T first;
         private T second;
         private bool exchanging;
+        private bool completed;
+
+        public bool Completed {
+            get { return completed; }
+            set { completed = value; }
+        }
 
         public ThreadPair(T first) {
             this.first = first;
             exchanging = false;
+            completed = false;
         }
 
         public T First {
