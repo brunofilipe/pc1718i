@@ -6,65 +6,67 @@ namespace ConcurrencyProgramming.serie1 {
     public class ExpirableLazy<T> where T : class {
 
         private readonly Func<T> provider;
-        private bool isCompleted;
-        private T val;
-        private readonly TimeSpan timeToLive;
+        private bool _isCompleted;
+        private T _val;
+        private readonly DateTime _timeToLive;
         private readonly object _lock = new object();
-        private LinkedList<int> threadQueue;
+        private readonly LinkedList<int> _threadQueue;
 
         public ExpirableLazy(Func<T> provider, TimeSpan timeToLive) {
             this.provider = provider;
-            this.timeToLive = timeToLive;
-            this.threadQueue = new LinkedList<int>();
+            this._timeToLive = DateTime.Now.Add(timeToLive);
+            this._threadQueue = new LinkedList<int>();
         }
 
         public T Value {
             get {
                 lock (_lock) {
+               
                     int threadId = Thread.CurrentThread.ManagedThreadId;
-                    TimeSpan now = DateTime.Now.TimeOfDay;
-                    if (timeToLive >= now && isCompleted) {
-                        return val;
+                    DateTime now = DateTime.Now;
+                    if (_timeToLive <= now && _isCompleted) {
+                        return _val;
                     }
                     //fazer o calculo, e retornar o val , tudo na thread invocante
-                    if ((!isCompleted || timeToLive < now) && threadQueue.Count == 0) {
+                    if ((!_isCompleted || _timeToLive > now) && _threadQueue.Count == 0) {
                         try {
-                            val = provider();
-                            isCompleted = true;
-                            return val;
+                            _val = provider();
+                            _isCompleted = true;
+                            return _val;
                         }
-                        catch (Exception) {
-                            throw;
+                        catch {
+                            throw new InvalidOperationException();
                         }
                     }
-                    LinkedListNode<int> node = threadQueue.AddLast(threadId);
+                    LinkedListNode<int> node = _threadQueue.AddLast(threadId);
                     do {
+
+                        if (_val == null && _threadQueue.First.Value == threadId) {
+                            _threadQueue.Remove(node);
+                            try {  
+                                _val = provider();
+                                _isCompleted = true;
+                                return _val;
+                            }
+                            catch (Exception) {
+                                Monitor.PulseAll(_lock);
+                                throw new InvalidOperationException();
+                            }
+                        }
+                        if (_val != null) {
+                            Monitor.PulseAll(_lock);
+                            _threadQueue.Remove(node);
+                            return _val;
+                        }
                         try {
                             Monitor.Wait(_lock);
                         }
                         catch (ThreadInterruptedException) {
-                            threadQueue.Remove(node);
+                            _threadQueue.Remove(node);
                             Monitor.PulseAll(_lock);
                             throw;
                         }
 
-                        if (val == null && threadQueue.First.Value == threadId) {
-                            threadQueue.Remove(node);
-                            try {
-                                val = provider();
-                                isCompleted = true;
-                                return val;
-                            }
-                            catch (Exception) {
-                                Monitor.PulseAll(_lock);
-                                throw;
-                            }
-                        }
-                        if (val != null){
-                            Monitor.PulseAll(_lock);
-                            threadQueue.Remove(node);
-                            return val;
-                        }
 
                     } while (true);
                 }
