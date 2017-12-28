@@ -9,7 +9,7 @@ public class UnsafeRefCountedHolder <T> {
 
     public UnsafeRefCountedHolder(T v) {
         value = new AtomicReference<>(v);
-        refCount.set(1);
+        refCount = new AtomicInteger(1);
     }
 
     public void AddRef() {
