@@ -2,29 +2,29 @@ package serie2;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ConcurrentQueue<E> {
-    private static class Node<T>{
-        final T item;
-        final AtomicReference<Node<T>> next;
-        public Node(T item, Node<T> next){
+public class ConcurrentQueue<T> {
+    private static class Node<E>{
+        final E item;
+        final AtomicReference<Node<E>> next;
+        public Node(E item, Node<E> next){
             this.item = item;
-            this.next = new AtomicReference<Node<T>>(next);
+            this.next = new AtomicReference<>(next);
         }
     }
-    private final AtomicReference<Node<E>> head;
-    private final AtomicReference<Node<E>> tail;
+    private final AtomicReference<Node<T>> head;
+    private final AtomicReference<Node<T>> tail;
 
     public ConcurrentQueue(){
-        Node<E> dummy = new Node<E>(null,null);
+        Node<T> dummy = new Node<T>(null,null);
         this.head = new AtomicReference<>(dummy);
         this.tail = new AtomicReference<>(dummy);
     }
 
-    public void put(E item){
-        Node<E> newNode = new Node<E>(item, null);
+    public void put(T item){
+        Node<T> newNode = new Node<T>(item, null);
         while (true) {
-            Node<E> currTail = tail.get();
-            Node<E> tailNext = currTail.next.get();
+            Node<T> currTail = tail.get();
+            Node<T> tailNext = currTail.next.get();
             if (tail.get()==currTail) { // Are tail and next consistent?
                 if (tailNext != null) {
                     // queue in intermediate state, advance state
@@ -40,11 +40,11 @@ public class ConcurrentQueue<E> {
         }
     }
 
-    public E tryTake() {
+    public T tryTake() {
         while(true) {
-            Node<E> headCur = head.get();
-            Node<E> tailCur = tail.get();
-            Node<E> headNext = headCur.next.get();
+            Node<T> headCur = head.get();
+            Node<T> tailCur = tail.get();
+            Node<T> headNext = headCur.next.get();
 
             if(headCur == head.get()) {
                 if(headCur == tailCur) {
@@ -53,7 +53,7 @@ public class ConcurrentQueue<E> {
 
                     tail.compareAndSet(tailCur, headNext);
                 } else   {
-                    E val = headNext.item;
+                    T val = headNext.item;
                     if(head.compareAndSet(headCur, headNext))
                         return val;
                 }
@@ -62,8 +62,8 @@ public class ConcurrentQueue<E> {
     }
 
     // take a datum - spinning if necessary
-    public E take() throws InterruptedException {
-        E v;
+    public T take() throws InterruptedException {
+        T v;
         while ((v = tryTake()) == null) {
             Thread.sleep(0);
         }

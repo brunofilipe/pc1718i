@@ -65,7 +65,7 @@ namespace ConcurrencyProgramming.serie2
                                     failuresDetected[tid]);
                 consumptions[tid] = count;
             });
-            //consumers[i].SetDaemon(true);
+            consumers[i].IsBackground = true;
             consumers[i].Start();
         }
 

@@ -29,6 +29,7 @@ public class SimpleThreadPoolExecutor {
         lock = new ReentrantLock();
         waitingCondition = lock.newCondition();
         shutdownCondition = lock.newCondition();
+        awaitTerminationCondition = lock.newCondition();
         pool = new HashMap<>();
         jobs = new LinkedList<>();
     }
@@ -59,6 +60,7 @@ public class SimpleThreadPoolExecutor {
                     throw ex;
                 }
                 if(!time){
+                    jobs.remove(job);
                     return false;
                 }
                 if(job.isAccepted()){
