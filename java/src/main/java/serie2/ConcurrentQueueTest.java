@@ -35,7 +35,7 @@ public class ConcurrentQueueTest {
                 System.out.printf("-->c#%d starts...%n", tid);
                 do {
                     try {
-                        String data = msqueue.dequeue();
+                        String data = msqueue.take();
                         if (!data.equals("hello")) {
                             failuresDetected[tid]++;
                             System.out.printf("[f#%d]", tid);
@@ -82,8 +82,8 @@ public class ConcurrentQueueTest {
                         failuresInjected[tid]++;
                     }
 
-                    // enqueue a data item
-                    msqueue.enqueue(data);
+                    // put a data item
+                    msqueue.put(data);
 
                     // increment request count and periodically display the "alive" menssage.
                     if (++count % 10 == 0)

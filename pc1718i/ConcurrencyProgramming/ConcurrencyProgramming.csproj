@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ConcurrencyProgramming.serie2.ConcurrentQueueTest</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="serie1\MessageHolder.cs" />
     <Compile Include="serie1\ExpirableLazy.cs" />
@@ -51,6 +53,8 @@
     <Compile Include="serie1\SyncUtils.cs" />
     <Compile Include="serie1\TimeoutHolder.cs" />
     <Compile Include="serie1\TransferQueue.cs" />
+    <Compile Include="serie2\ConcurrentQueue.cs" />
+    <Compile Include="serie2\ConcurrentQueueTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

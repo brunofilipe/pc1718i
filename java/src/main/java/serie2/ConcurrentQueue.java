@@ -20,7 +20,7 @@ public class ConcurrentQueue<E> {
         this.tail = new AtomicReference<>(dummy);
     }
 
-    public void enqueue(E item){
+    public void put(E item){
         Node<E> newNode = new Node<E>(item, null);
         while (true) {
             Node<E> currTail = tail.get();
@@ -40,7 +40,7 @@ public class ConcurrentQueue<E> {
         }
     }
 
-    public E tryDequeue() {
+    public E tryTake() {
         while(true) {
             Node<E> headCur = head.get();
             Node<E> tailCur = tail.get();
@@ -61,10 +61,10 @@ public class ConcurrentQueue<E> {
         }
     }
 
-    // dequeue a datum - spinning if necessary
-    public E dequeue() throws InterruptedException {
+    // take a datum - spinning if necessary
+    public E take() throws InterruptedException {
         E v;
-        while ((v = tryDequeue()) == null) {
+        while ((v = tryTake()) == null) {
             Thread.sleep(0);
         }
         return v;
