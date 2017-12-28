@@ -22,6 +22,7 @@ namespace ConcurrencyProgramming.serie1 {
 
         public bool Transfer(T msg, int timeout) {
             lock (_lock) {
+				if (timeout == 0) return false;
                 Put(msg);
                 int lastTime = (timeout != Timeout.Infinite) ? Environment.TickCount : 0;
                 do {
@@ -29,16 +30,19 @@ namespace ConcurrencyProgramming.serie1 {
                         queue.Remove(_node);
                         return true;
                     }
+					if (SyncUtils.AdjustTimeout(ref lastTime, ref timeout) == 0) {
+						queue.Remove(_node);
+						return false;
+					}
                     try {
                         Monitor.Wait(_lock, timeout);
-                    }catch (ThreadInterruptedException) {
+                    }
+                    catch (ThreadInterruptedException) {
                         queue.Remove(_node);
+                        Monitor.PulseAll(_lock);
                         throw;
                     }
-                    if (SyncUtils.AdjustTimeout(ref lastTime, ref timeout) == 0) {
-                        queue.Remove(_node);
-                        return false;
-                    }
+
                 } while (true);
 
             }
@@ -47,18 +51,34 @@ namespace ConcurrencyProgramming.serie1 {
 
         public bool Take(int timeout, out T msg) {
             lock (_lock) {
-                try {
-                    LinkedListNode<MessageHolder<T>> msgNode = queue.First;
-                    if (msgNode == null) {
-                        msg = default(T);
-                        return false;
-                    }
-                    msgNode.Value.IsTransferring = false;
-                    msg = msgNode.Value.Msg;
-                    return true;
-                }catch (ThreadInterruptedException) {
-                    throw;
+                if(timeout == 0 || queue.Count == 0){
+                    msg = default(T);
+                    Monitor.PulseAll(_lock);
+                    return false;
                 }
+                TimeoutHolder th = new TimeoutHolder(timeout);
+                do {
+                        LinkedListNode<MessageHolder<T>> msgNode = queue.First;
+                        if (msgNode == null || (timeout = th.Value) == 0){
+                            msg = default(T);
+                            Monitor.PulseAll(_lock);
+                            return false;
+                        }
+                        msgNode.Value.IsTransferring = false;
+                        msg = msgNode.Value.Msg;
+                        if (msg != null){
+                            Monitor.PulseAll(_lock);
+                            return true;
+                        }
+                        try {
+                            Monitor.Wait(_lock, timeout);
+                        }
+                        catch (ThreadInterruptedException){
+                            Monitor.PulseAll(_lock);
+                            throw;
+                        }
+                } while (true);
+             
             }
         }
     }

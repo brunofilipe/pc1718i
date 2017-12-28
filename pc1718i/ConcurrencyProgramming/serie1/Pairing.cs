@@ -28,13 +28,14 @@ namespace ConcurrencyProgramming.serie1 {
                     if (nodeU != null) {
                         listOfTValues.Remove(node);
                         listOfUValues.Remove(nodeU);
+                        Monitor.PulseAll(_lock);
                         return new Tuple<T, U>(value, nodeU.Value);
                     }
                     try {
                         Monitor.Wait(_lock, timeout);
                     }
                     catch (ThreadInterruptedException) {
-                        Monitor.Pulse(_lock);
+                        Monitor.PulseAll(_lock);
                         throw;
                     }
                 } while (true);
@@ -55,6 +56,7 @@ namespace ConcurrencyProgramming.serie1 {
                     {
                         listOfUValues.Remove(node);
                         listOfTValues.Remove(nodeT);
+                        Monitor.PulseAll(_lock);
                         return new Tuple<T, U>(nodeT.Value,value);
                     }
                     try
@@ -63,7 +65,7 @@ namespace ConcurrencyProgramming.serie1 {
                     }
                     catch (ThreadInterruptedException)
                     {
-                        Monitor.Pulse(_lock);
+                        Monitor.PulseAll(_lock);
                         throw;
                     }
                 } while (true);
