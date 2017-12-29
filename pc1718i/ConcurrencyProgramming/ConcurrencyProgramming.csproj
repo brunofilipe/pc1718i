@@ -55,6 +55,7 @@
     <Compile Include="serie1\TransferQueue.cs" />
     <Compile Include="serie2\ConcurrentQueue.cs" />
     <Compile Include="serie2\ConcurrentQueueTest.cs" />
+    <Compile Include="serie2\ExpirableLazy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
