@@ -13,30 +13,34 @@ public class UnsafeRefCountedHolder <T> {
     }
 
     public void AddRef() {
+        do{
             int currRefCount = refCount.get();
             if (currRefCount == 0)
                 throw new IllegalStateException();
             refCount.compareAndSet(currRefCount, currRefCount + 1);
+        }while (true);
     }
 
     public void ReleaseRef() {
-        T currValue = value.get();
-        int currRefCount = refCount.get();
-        if (currRefCount == 0)
-            throw new IllegalStateException();
+        do{
+            T currValue = value.get();
+            int currRefCount = refCount.get();
+            if (currRefCount == 0)
+                throw new IllegalStateException();
 
-        if (refCount.compareAndSet(currRefCount, currRefCount - 1)) {
-            if (currRefCount == 1) {
-                AutoCloseable disposable = (AutoCloseable) currValue;
-                value.set(null);
-                if (disposable != null)
-                    try {
-                        disposable.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+            if (refCount.compareAndSet(currRefCount, currRefCount - 1)) {
+                if (currRefCount == 1) {
+                    AutoCloseable disposable = (AutoCloseable) currValue;
+                    value.set(null);
+                    if (disposable != null)
+                        try {
+                            disposable.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
             }
-        }
+        } while (true);
     }
 
     public T getValue() {

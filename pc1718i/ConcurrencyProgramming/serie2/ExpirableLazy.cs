@@ -16,7 +16,7 @@ namespace ConcurrencyProgramming.serie2 {
             }
         }
         private readonly Func<T> provider;
-        private volatile ValueHolder state;
+        private volatile ValueHolder state = null;
         private const ValueHolder UNAVAILABLE = null;
         private static readonly ValueHolder BUSY = new ValueHolder(default(T), DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, Timeout.Infinite)));
         private readonly TimeSpan timeSpan;
@@ -35,17 +35,17 @@ namespace ConcurrencyProgramming.serie2 {
 
         public T Value {
             get {
-                if (IsAvailable(state)){
-                    //retornar o value atomicamente (CAS)
-                }
+                do {
+                    ValueHolder currState = state;
+                    if(currState == UNAVAILABLE) {
+                        do {
 
+                        } while(Interlocked.CompareExchange(ref state, BUSY, sn))
+                    }
+                } while (true);
                 lock (_lock) {
-
                     int threadId = Thread.CurrentThread.ManagedThreadId;
                     DateTime now = DateTime.Now;
-                    if (_timeToLive <= now && _isCompleted) {
-                        return _val;
-                    }
                     //fazer o calculo, e retornar o val , tudo na thread invocante
                     if ((!_isCompleted || _timeToLive > now) && _threadQueue.Count == 0) {
                         try {
