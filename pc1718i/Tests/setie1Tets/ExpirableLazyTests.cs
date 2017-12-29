@@ -28,8 +28,6 @@ namespace Tests.setie1Tets {
             Assert.AreEqual("single result", exLazy.Value);
         }
 
-        
-
         [TestMethod]
         public void TestParallelExpirableLazyWithException() {
             ExpirableLazy<String> expirableLazy = new ExpirableLazy<String>(() => {

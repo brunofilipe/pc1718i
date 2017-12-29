@@ -1,14 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace ConcurrencyProgramming.serie1 {
-    public class ExpirableLazy<T> where T : class {
+namespace ConcurrencyProgramming.serie2 {
+    class ExpirableLazy<T> where T : class {
+        private class ValueHolder{
+            internal readonly T value;
+            internal DateTime _timeToLive;
+            public ValueHolder(T value, DateTime _timeToLive) {
+                this.value = value;
+                this._timeToLive = _timeToLive;
+            }
+        }
         private readonly Func<T> provider;
-        private bool _isCompleted;
-        private T _val;
+        private volatile ValueHolder state;
+        private const ValueHolder UNAVAILABLE = null;
+        private static readonly ValueHolder BUSY = new ValueHolder(default(T), DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, Timeout.Infinite)));
         private readonly TimeSpan timeSpan;
-        private  DateTime _timeToLive;
         private readonly object _lock = new object();
         private readonly LinkedList<int> _threadQueue;
 
@@ -18,24 +29,31 @@ namespace ConcurrencyProgramming.serie1 {
             this._threadQueue = new LinkedList<int>();
         }
 
+        private bool IsAvailable(ValueHolder observed) {
+            return observed != UNAVAILABLE && observed != BUSY && observed._timeToLive > DateTime.Now;
+        }
+
         public T Value {
             get {
+                if (IsAvailable(state)){
+                    //retornar o value atomicamente (CAS)
+                }
+
                 lock (_lock) {
-               
+
                     int threadId = Thread.CurrentThread.ManagedThreadId;
                     DateTime now = DateTime.Now;
-                    if (_timeToLive > now && _isCompleted) {
+                    if (_timeToLive <= now && _isCompleted) {
                         return _val;
                     }
                     //fazer o calculo, e retornar o val , tudo na thread invocante
-                    if ((!_isCompleted || _timeToLive <= now) && _threadQueue.Count == 0) {
+                    if ((!_isCompleted || _timeToLive > now) && _threadQueue.Count == 0) {
                         try {
                             _val = provider();
                             _timeToLive = DateTime.Now.Add(timeSpan);
                             _isCompleted = true;
                             return _val;
-                        }
-                        catch {
+                        } catch {
                             throw new InvalidOperationException();
                         }
                     }
@@ -51,13 +69,12 @@ namespace ConcurrencyProgramming.serie1 {
                         }
                         if (_val == null && _threadQueue.First.Value == threadId) {
                             _threadQueue.Remove(node);
-                            try {  
+                            try {
                                 _val = provider();
                                 _timeToLive = DateTime.Now.Add(timeSpan);
                                 _isCompleted = true;
                                 return _val;
-                            }
-                            catch (Exception) {
+                            } catch (Exception) {
                                 Monitor.PulseAll(_lock);
                                 throw new InvalidOperationException();
                             }
@@ -71,7 +88,6 @@ namespace ConcurrencyProgramming.serie1 {
                 }
             }
         }
-
 
     }
 }
