@@ -20,7 +20,6 @@ namespace ConcurrencyProgramming.serie2 {
         private const ValueHolder UNAVAILABLE = null;
         private static readonly ValueHolder BUSY = new ValueHolder(default(T), DateTime.Now.Add(new TimeSpan(0, 0, 0, 0, Timeout.Infinite)));
         private readonly TimeSpan timeSpan;
-        private readonly object _lock = new object();
         private readonly LinkedList<int> _threadQueue;
 
         public ExpirableLazy(Func<T> provider, TimeSpan timeToLive) {
@@ -35,57 +34,42 @@ namespace ConcurrencyProgramming.serie2 {
 
         public T Value {
             get {
+                T value;
                 do {
                     ValueHolder currState = state;
                     if(currState == UNAVAILABLE) {
-                        do {
-
-                        } while(Interlocked.CompareExchange(ref state, BUSY, sn))
-                    }
-                } while (true);
-                lock (_lock) {
-                    int threadId = Thread.CurrentThread.ManagedThreadId;
-                    DateTime now = DateTime.Now;
-                    //fazer o calculo, e retornar o val , tudo na thread invocante
-                    if ((!_isCompleted || _timeToLive > now) && _threadQueue.Count == 0) {
-                        try {
-                            _val = provider();
-                            _timeToLive = DateTime.Now.Add(timeSpan);
-                            _isCompleted = true;
-                            return _val;
-                        } catch {
-                            throw new InvalidOperationException();
-                        }
-                    }
-                    LinkedListNode<int> node = _threadQueue.AddLast(threadId);
-                    do {
-
-                        try {
-                            Monitor.Wait(_lock);
-                        } catch (ThreadInterruptedException) {
-                            _threadQueue.Remove(node);
-                            Monitor.PulseAll(_lock);
-                            throw;
-                        }
-                        if (_val == null && _threadQueue.First.Value == threadId) {
-                            _threadQueue.Remove(node);
+                        while(Interlocked.CompareExchange(ref state, BUSY, currState) == currState) { 
                             try {
-                                _val = provider();
-                                _timeToLive = DateTime.Now.Add(timeSpan);
-                                _isCompleted = true;
-                                return _val;
+                                value = provider();
+                                DateTime _timeToLive = DateTime.Now.Add(timeSpan);
+                                state = new ValueHolder(value, _timeToLive);
+                                return value;
                             } catch (Exception) {
-                                Monitor.PulseAll(_lock);
+                                state = currState;
                                 throw new InvalidOperationException();
                             }
                         }
-                        if (_val != null) {
-                            Monitor.PulseAll(_lock);
-                            _threadQueue.Remove(node);
-                            return _val;
+                    }
+                    if(currState != BUSY) {
+                        while (Interlocked.CompareExchange(ref state, BUSY, currState) == currState) {
+                            if(currState._timeToLive <= DateTime.Now) {
+                                try {
+                                    value = provider();
+                                    DateTime _timeToLive = DateTime.Now.Add(timeSpan);
+                                    state = new ValueHolder(value, _timeToLive);
+                                    return value;
+                                } catch (Exception) {
+                                    state = currState;
+                                    throw new InvalidOperationException();
+                                }
+                            }
+                            value = currState.value;
+                            //TimeToLive didn´t expired and has value calculated
+                            Interlocked.Exchange(ref state, currState);
+                            return value;
                         }
-                    } while (true);
-                }
+                    }
+                } while (true);
             }
         }
 
