@@ -16,6 +16,7 @@ namespace Serie1Test
         {
             try
             {
+                Thread.Sleep(100);
                 Assert.AreEqual("test!", _expirableLazy.Value);
             }
             catch (Exception e)
@@ -87,7 +88,7 @@ namespace Serie1Test
             thread1.Start();
             thread2.Start();
             thread3.Start();
-            
+
             thread2.Interrupt();
             
             thread1.Join();

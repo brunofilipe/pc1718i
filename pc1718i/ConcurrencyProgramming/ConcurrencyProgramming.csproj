@@ -57,10 +57,13 @@
     <Compile Include="serie2\ConcurrentQueue.cs" />
     <Compile Include="serie2\ConcurrentQueueTest.cs" />
     <Compile Include="serie2\ExpirableLazy.cs" />
+    <Compile Include="serie3\APMServer\Logger.cs" />
+    <Compile Include="serie3\APMServer\Store.cs" />
     <Compile Include="serie3\Client\Client.cs" />
-    <Compile Include="serie3\Server\Logger.cs" />
-    <Compile Include="serie3\Server\Server.cs" />
-    <Compile Include="serie3\Server\Store.cs" />
+    <Compile Include="serie3\APMServer\Server.cs" />
+    <Compile Include="serie3\SyncServer\Logger.cs" />
+    <Compile Include="serie3\SyncServer\Server.cs" />
+    <Compile Include="serie3\SyncServer\Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
