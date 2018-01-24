@@ -7,9 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConcurrencyProgramming.serie3.APMServer {
-    // Logger single-threaded.
-    public class Logger {
+namespace ConcurrencyProgramming.serie3.TAPServer {
+    class Logger {
         private readonly TextWriter writer;
         private DateTime start_time;
         private int num_requests;

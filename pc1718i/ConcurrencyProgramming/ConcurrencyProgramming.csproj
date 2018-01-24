@@ -57,6 +57,8 @@
     <Compile Include="serie2\ConcurrentQueue.cs" />
     <Compile Include="serie2\ConcurrentQueueTest.cs" />
     <Compile Include="serie2\ExpirableLazy.cs" />
+    <Compile Include="serie3\APMServer\Handler.cs" />
+    <Compile Include="serie3\APMServer\Listener.cs" />
     <Compile Include="serie3\APMServer\Logger.cs" />
     <Compile Include="serie3\APMServer\Store.cs" />
     <Compile Include="serie3\Client\Client.cs" />
@@ -64,6 +66,8 @@
     <Compile Include="serie3\SyncServer\Logger.cs" />
     <Compile Include="serie3\SyncServer\Server.cs" />
     <Compile Include="serie3\SyncServer\Store.cs" />
+    <Compile Include="serie3\Utils\GenericAsyncResult.cs" />
+    <Compile Include="serie3\Utils\MessageQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
