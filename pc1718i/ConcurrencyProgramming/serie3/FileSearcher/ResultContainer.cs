@@ -35,9 +35,13 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
                 if (_queue.Count < MAX_SIZE)
                     _queue.Add(file);
                 else {
-                    _queue.Remove(_queue[_queue.Count-1]);
-                    _queue.Sort( (info, fileInfo) => (int) (file.Length - fileInfo.Length));
-                   
+                    _queue.Sort( (info, fileInfo) => (int) (info.Length - fileInfo.Length));
+                    FileInfo node = _queue[_queue.Count - 1];
+                    if (node.Length < file.Length)
+                    {
+                        _queue.Remove(node);
+                        _queue.Add(file);
+                    }                
                 }
             }
             //add File...
