@@ -64,6 +64,8 @@
     <Compile Include="serie3\APMServer\Store.cs" />
     <Compile Include="serie3\Client\Client.cs" />
     <Compile Include="serie3\APMServer\Server.cs" />
+    <Compile Include="serie3\FileSearcher\ResultContainer.cs" />
+    <Compile Include="serie3\FileSearcher\Search.cs" />
     <Compile Include="serie3\SyncServer\Logger.cs" />
     <Compile Include="serie3\SyncServer\Server.cs" />
     <Compile Include="serie3\SyncServer\Store.cs" />
