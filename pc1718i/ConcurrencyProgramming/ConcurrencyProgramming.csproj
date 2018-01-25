@@ -60,18 +60,24 @@
     <Compile Include="serie3\APMServer\Handler.cs" />
     <Compile Include="serie3\APMServer\Listener.cs" />
     <Compile Include="serie3\APMServer\Logger.cs" />
+    <Compile Include="serie3\APMServer\MessageQueue.cs" />
     <Compile Include="serie3\APMServer\Store.cs" />
     <Compile Include="serie3\Client\Client.cs" />
     <Compile Include="serie3\APMServer\Server.cs" />
     <Compile Include="serie3\SyncServer\Logger.cs" />
     <Compile Include="serie3\SyncServer\Server.cs" />
     <Compile Include="serie3\SyncServer\Store.cs" />
-    <Compile Include="serie3\Utils\GenericAsyncResult.cs" />
-    <Compile Include="serie3\Utils\MessageQueue.cs" />
+    <Compile Include="serie3\TAPServer\Handler.cs" />
+    <Compile Include="serie3\TAPServer\Listener.cs" />
+    <Compile Include="serie3\TAPServer\Logger.cs" />
+    <Compile Include="serie3\TAPServer\MessageQueue.cs" />
+    <Compile Include="serie3\TAPServer\Server.cs" />
+    <Compile Include="serie3\TAPServer\Store.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
