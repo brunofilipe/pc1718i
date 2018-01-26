@@ -65,18 +65,6 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Number of Files";
             // 
-            // number
-            // 
-            this.number.Location = new System.Drawing.Point(111, 53);
-            this.number.Maximum = new System.Decimal(new int[] {
-                                    100,
-                                    0,
-                                    0,
-                                    0});
-            this.number.Name = "number";
-            this.number.Size = new System.Drawing.Size(120, 20);
-            this.number.TabIndex = 27;
-            // 
             // label3
             // 
             this.label3.Location = new System.Drawing.Point(0, 0);
@@ -111,11 +99,10 @@
             this.displayLabel.ForeColor = System.Drawing.Color.Chocolate;
             this.displayLabel.Location = new System.Drawing.Point(12, 318);
             this.displayLabel.Name = "displayLabel";
-            this.displayLabel.Size = new System.Drawing.Size(163, 15);
+            this.displayLabel.Size = new System.Drawing.Size(101, 15);
             this.displayLabel.TabIndex = 8;
             this.displayLabel.Text = "Error Message";
             this.displayLabel.Visible = false;
-
             // 
             // filePaths
             // 
@@ -155,12 +142,20 @@
             this.progressBar.TabIndex = 22;
             this.progressBar.Visible = false;
             // 
+            // number
+            // 
+            this.number.Location = new System.Drawing.Point(111, 53);
+            this.number.Name = "number";
+            this.number.Size = new System.Drawing.Size(120, 20);
+            this.number.TabIndex = 27;
+            this.number.Value = 0;
+            // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(373, 347);
+            this.ClientSize = new System.Drawing.Size(319, 347);
             this.Controls.Add(this.number);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.browse);

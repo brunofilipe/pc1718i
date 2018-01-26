@@ -33,8 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+    <StartupObject>ConcurrencyProgramming.serie3.Application.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -70,6 +69,7 @@
     <Compile Include="serie3\Application\Application.Designer.cs">
       <DependentUpon>Application.cs</DependentUpon>
     </Compile>
+    <Compile Include="serie3\Application\Program.cs" />
     <Compile Include="serie3\Client\Client.cs" />
     <Compile Include="serie3\APMServer\Server.cs" />
     <Compile Include="serie3\FileSearcher\ResultContainer.cs" />
