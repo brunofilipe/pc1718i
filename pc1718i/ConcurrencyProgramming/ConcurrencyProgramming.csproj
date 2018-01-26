@@ -39,6 +39,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +64,12 @@
     <Compile Include="serie3\APMServer\Logger.cs" />
     <Compile Include="serie3\APMServer\MessageQueue.cs" />
     <Compile Include="serie3\APMServer\Store.cs" />
+    <Compile Include="serie3\Application\Application.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="serie3\Application\Application.Designer.cs">
+      <DependentUpon>Application.cs</DependentUpon>
+    </Compile>
     <Compile Include="serie3\Client\Client.cs" />
     <Compile Include="serie3\APMServer\Server.cs" />
     <Compile Include="serie3\FileSearcher\ResultContainer.cs" />
@@ -79,7 +87,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="serie3\Application\Application.resx">
+      <DependentUpon>Application.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
