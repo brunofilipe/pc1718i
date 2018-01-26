@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConcurrencyProgramming.serie3.FileSearcher {
     public class Search {
-        public static ResultContainer ParallelGetBiggestFiles(string path, int numOfFiles, CancellationToken token) {
+        public static ResultContainer ParallelGetBiggestFiles(string path, int numOfFiles, CancellationToken token, IProgress<ResultContainer> progress = null) {
             if (!Directory.Exists(path)) {
                 throw new ArgumentException();
             }
@@ -24,14 +24,16 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
 
                 var file = new FileInfo(filePath);
                 result.TryAddFile(file);
+
+                progress?.Report(result);
             });
 
             token.ThrowIfCancellationRequested();
             return result;
         }
 
-        public static Task<ResultContainer> ParallelGetBiggestFilesAsync(string path, int numOfFiles, CancellationToken token) {
-            return Task.Factory.StartNew(() => ParallelGetBiggestFiles(path, numOfFiles, token), token);
+        public static Task<ResultContainer> ParallelGetBiggestFilesAsync(string path, int numOfFiles, CancellationToken token, IProgress<ResultContainer> progress = null) {
+            return Task.Factory.StartNew(() => ParallelGetBiggestFiles(path, numOfFiles, token, progress), token);
         }
     }
 }
