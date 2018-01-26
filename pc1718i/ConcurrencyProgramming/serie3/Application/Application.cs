@@ -12,6 +12,7 @@ using System.Windows.Forms;
 namespace ConcurrencyProgramming.serie3.Application {
     public partial class Application : Form {
         private CancellationTokenSource token;
+        private bool IsProcessing;
         public Application() {
             InitializeComponent();
         }
@@ -21,15 +22,20 @@ namespace ConcurrencyProgramming.serie3.Application {
         }
 
         private void Cancel_Click(object sender, EventArgs e) {
+            token.Cancel();
+            Error("Cancelling...");
+        }
 
+        private void Error(string v) {
+            throw new NotImplementedException();
         }
 
         private void Browse_Click(object sender, EventArgs e) {
-
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog()) {
+                if (dialog.ShowDialog() == DialogResult.OK) {
+                    dir.Text = dialog.SelectedPath;
+                }
+            }
         }
-
-        
-
-       
     }
 }
