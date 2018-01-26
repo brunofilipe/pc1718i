@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConcurrencyProgramming.serie3.FileSearcher {
-    class Search {
+    public class Search {
         public static ResultContainer ParallelGetBiggestFiles(string path, int numOfFiles, CancellationToken token) {
             if (!Directory.Exists(path)) {
                 throw new ArgumentException();

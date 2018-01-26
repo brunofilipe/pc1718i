@@ -8,7 +8,7 @@ using System.Threading;
 using System.IO;
 
 namespace ConcurrencyProgramming.serie3.FileSearcher {
-    class ResultContainer {
+    public class ResultContainer {
         private readonly int MAX_SIZE;
         private object _lock = new object();
         private List<FileInfo> _queue;
@@ -36,10 +36,10 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
                     _queue.Add(file);
                 else {
                     _queue.Sort( (info, fileInfo) => (int) (info.Length - fileInfo.Length));
-                    FileInfo node = _queue[_queue.Count - 1];
-                    if (node.Length < file.Length)
+                    FileInfo smallest = _queue[0];
+                    if (smallest.Length < file.Length)
                     {
-                        _queue.Remove(node);
+                        _queue.Remove(smallest);
                         _queue.Add(file);
                     }                
                 }
