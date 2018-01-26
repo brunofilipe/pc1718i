@@ -29,5 +29,9 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
             token.ThrowIfCancellationRequested();
             return result;
         }
+
+        public static Task<ResultContainer> ParallelGetBiggestFilesAsync(string path, int numOfFiles, CancellationToken token) {
+            return Task.Factory.StartNew(() => ParallelGetBiggestFiles(path, numOfFiles, token), token);
+        }
     }
 }

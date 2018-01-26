@@ -12,12 +12,10 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
         private readonly int MAX_SIZE;
         private object _lock = new object();
         private List<FileInfo> _queue;
-        //private ConcurrentQueue<FileInfo> _queue;
         private FileInfo smallestFile;
         public int FilesCount { get; set; }
         
         public ResultContainer(int maxSize) {
-            //_queue = new ConcurrentQueue<FileInfo>();
             _queue = new List<FileInfo>();
             MAX_SIZE = maxSize;
         }
@@ -44,11 +42,6 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
                     }                
                 }
             }
-            //add File...
-            //sorting elements in queue
-            //var list = _queue.ToList();
-            //list = list.OrderBy(f => f.Length).ToList();
-            //_queue = new ConcurrentQueue<FileInfo>(list);
         }
     }
 }
