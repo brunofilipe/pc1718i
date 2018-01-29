@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.IO;
 
@@ -11,7 +12,7 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
     public class ResultContainer {
         private readonly int MAX_SIZE;
         private object _lock = new object();
-        private List<FileInfo> _queue;
+        private volatile List<FileInfo> _queue;
         private FileInfo smallestFile;
         public int FilesCount { get; set; }
         

@@ -20,18 +20,18 @@ namespace ConcurrencyProgramming.serie3.Application {
         public Application() {
             InitializeComponent();
             _synchronizationContext = SynchronizationContext.Current;
-            _progress = new Progress<ResultContainer>(DisplayResults);
+            _progress = new Progress<ResultContainer>(UpdateProgressBar);
         }
 
         private async void Enter_Click(object sender, EventArgs e) {
             if (_isProcessing) {
                 DisplayError("Search already in progress..");
                 return;
-            } /*
-            if (string.IsNullOrEmpty(dir.Text) || number.Value != null) {
-                displayError("Missing parameters..");
+            }
+            if (string.IsNullOrEmpty(dir.Text)) {
+                DisplayError("Missing parameters..");
                 return;
-            }*/
+            }
             _token = new CancellationTokenSource();
             _isProcessing = true;
             ResetResults();
@@ -75,8 +75,33 @@ namespace ConcurrencyProgramming.serie3.Application {
             }, null);
         }
 
-        private void DisplayError(string cancelling) {
-            throw new NotImplementedException();
+        private async void DisplayError(string m, int time = 3000) {
+            _synchronizationContext.Post(message => {
+                displayLabel.ForeColor = Color.Red;
+                displayLabel.Text = (string)message;
+                displayLabel.Visible = true;
+                progressBar.Visible = false;
+                progressBar.Value = 0;
+            }, m);
+            if (time != Timeout.Infinite) {
+                await Task.Factory.StartNew(() => {
+                    Thread.Sleep(time);
+                    _synchronizationContext.Send(state => { displayLabel.Visible = false; }, null);
+                });
+            }
+        }
+
+        private void UpdateProgressBar(ResultContainer resultContainer) {
+            _synchronizationContext.Post(state => {
+                ResultContainer result = state as ResultContainer;
+                if (result == null)
+                    throw new ArgumentException();
+
+                progressBar.Visible = true;
+                progressBar.Maximum = result.FilesCount + 1;
+                progressBar.Value += 1;
+
+            }, resultContainer);
         }
 
         private void DisplayResults(ResultContainer resultContainer) {
@@ -90,8 +115,34 @@ namespace ConcurrencyProgramming.serie3.Application {
                 progressBar.Value += 1;
 
                 filePaths.Enabled = true;
+                /*
+                List<string> files = result.GetFiles();
+                if (filePaths.Items.Count == 0) {
+                    foreach (string file in files) {
+                        filePaths.Items.Add(new ListViewItem(file));
+                    }
+                    return;
+                }
+                foreach (ListViewItem item in filePaths.Items) {
+                    if (!files.Contains(item.Text)) {
+                        foreach (string file in files) {
+                            ListViewItem newItem = new ListViewItem(file);
+                            if (!filePaths.Items.Contains(newItem)) {
+                                filePaths.Items.Remove(item);
+                                filePaths.Items.Add(newItem);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                        filePaths.Items.Remove(item);
+                }*/
+                /*
+                foreach (string s in files) {
+                    if(filePaths.Items.)
+                }
 
-                filePaths.Items.Clear();
+                filePaths.Items.Clear();*/
                 foreach (string file in result.GetFiles()) {
                     filePaths.Items.Add(new ListViewItem(file.Substring(dir.Text.Length)));
                 }

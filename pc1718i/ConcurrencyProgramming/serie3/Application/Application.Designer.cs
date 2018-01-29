@@ -148,14 +148,13 @@
             this.number.Name = "number";
             this.number.Size = new System.Drawing.Size(120, 20);
             this.number.TabIndex = 27;
-            this.number.Value = 0;
             // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(319, 347);
+            this.ClientSize = new System.Drawing.Size(317, 347);
             this.Controls.Add(this.number);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.browse);

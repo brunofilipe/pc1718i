@@ -20,7 +20,7 @@ namespace ConcurrencyProgramming.serie3.FileSearcher {
 
             Parallel.ForEach(files, (filePath, loopState) => {
                 if (token.IsCancellationRequested)
-                    loopState.Stop();
+                    loopState.Break();
 
                 var file = new FileInfo(filePath);
                 result.TryAddFile(file);
