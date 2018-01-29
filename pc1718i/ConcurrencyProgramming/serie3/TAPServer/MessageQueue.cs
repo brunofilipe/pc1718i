@@ -16,7 +16,7 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
         }
         class ReadRequest {
             public bool IsReadAvailable { get; set; }
-            public String MsgToRead { get; set; }
+            public String Msg { get; set; }
         }
         String[] messageList;
         LinkedList<ReadRequest> readers;
@@ -42,7 +42,7 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
                     if (readers.Count > 0) {
                         ReadRequest rq = readers.First.Value;
                         readers.RemoveFirst();
-                        rq.MsgToRead = msg;
+                        rq.Msg = msg;
                         rq.IsReadAvailable = true;
                         Monitor.PulseAll(this);
                     } else {
@@ -75,12 +75,12 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
                     try {
                         Monitor.Wait(_lock);
                         if (rq.IsReadAvailable) {
-                            return rq.MsgToRead;
+                            return rq.Msg;
                         }
                     } catch (ThreadInterruptedException) {
                         if (rq.IsReadAvailable) {
                             Thread.CurrentThread.Interrupt();
-                            return rq.MsgToRead;
+                            return rq.Msg;
                         } else {
                             readers.Remove(rq);
                             throw;

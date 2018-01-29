@@ -15,10 +15,11 @@ namespace ConcurrencyProgramming.serie3.APMServer {
         private static readonly Dictionary<string, Action<string[], StreamWriter, MessageQueue>> MESSAGE_HANDLERS;
 
         static Handler() {
-            MESSAGE_HANDLERS = new Dictionary<string, Action<string[], StreamWriter, MessageQueue>>();
-            MESSAGE_HANDLERS["SET"] = ProcessSetMessage;
-            MESSAGE_HANDLERS["GET"] = ProcessGetMessage;
-            MESSAGE_HANDLERS["KEYS"] = ProcessKeysMessage;
+            MESSAGE_HANDLERS = new Dictionary<string, Action<string[], StreamWriter, MessageQueue>> {
+                ["SET"] = ProcessSetMessage,
+                ["GET"] = ProcessGetMessage,
+                ["KEYS"] = ProcessKeysMessage
+            };
         }
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace ConcurrencyProgramming.serie3.APMServer {
                 queue.TryPut(" GET Message  WITH " + value);
                 wr.WriteLine("\"{0}\"\n", value);
             } else {
-                queue.TryPut(" GET Message  WITH NIL");
+                queue.TryPut(" GET Message WITH NIL");
                 wr.WriteLine("(nil)\n");
             }
         }

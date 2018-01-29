@@ -65,21 +65,16 @@ namespace ConcurrencyProgramming.serie3.APMServer {
                     else {
                         counterCallbacks.Value++;
                         onProccessConnection(ar);
-                        counterCallbacks.Value--; // Caso nao tenha executado recursivamente o callback (lançar a operação assincrono e de seguida executa-la)
-                                                              // decerementa.
+                        counterCallbacks.Value--; 
                     }
                 }
             };
-
-            // Recebe uma conexao e realiza e executa o processamento
             onProccessConnection = (ar) => {
                 TcpClient connection = null;
                 try {
                     connection = srv.EndAcceptTcpClient(ar);
-
                     int currentActiveConnection = Interlocked.Increment(ref conectionCounter);
                     if (currentActiveConnection < MAX_CONNECTIONS) {
-                        //still can do work!!!
                         srv.BeginAcceptTcpClient(onAcceptConnection, null);
                     }
                     logQueue.TryPut(String.Format("activeConnections connections {0}. Cannot be more than MAX\n", conectionCounter));

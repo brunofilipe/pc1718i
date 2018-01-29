@@ -63,7 +63,7 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
                     await Task.Factory.StartNew(() => ListeningWorkAsync(srv));
 
             } catch (SocketException se) {
-            Console.WriteLine("****error: " + se.Message);
+                Console.WriteLine("****error: " + se.Message);
             }
         }
         private async Task ProcessConnectionAsync(TcpClient socket) {

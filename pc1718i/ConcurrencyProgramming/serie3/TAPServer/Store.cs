@@ -10,6 +10,7 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
         /// The singleton instance.
         /// </summary>
         private static readonly Store _instance = new Store();
+        private readonly object _lock = new object();
 
         /// <summary>
         /// Gets the singleton instance.
@@ -37,7 +38,9 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         public void Set(string key, string value) {
-            _store[key] = value;
+            lock (_lock) {
+                _store[key] = value;
+            }
         }
 
         /// <summary>
@@ -46,16 +49,20 @@ namespace ConcurrencyProgramming.serie3.TAPServer {
         /// <param name="key">The key.</param>
         /// <param name="value">The value.</param>
         public string Get(string key) {
-            string value = null;
-            _store.TryGetValue(key, out value);
-            return value;
+            lock (_lock) {
+                string value = null;
+                _store.TryGetValue(key, out value);
+                return value;
+            }
         }
 
         /// <summary>
         /// Gets all keys. 
         /// </summary>        
         public IEnumerable<string> Keys() {
-            return _store.Keys;
+            lock (_lock) {
+                return _store.Keys;
+            }
         }
     }
 }
